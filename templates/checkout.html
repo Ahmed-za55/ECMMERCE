@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}تأكيد الطلب - LUXE STORE{% endblock %}
+
+{% block content %}
+<div class="page-container" style="max-width:600px;">
+    <div class="page-header">
+        <h1><i class="fas fa-check-circle" style="color:var(--accent); margin-left:0.5rem;"></i> تأكيد الطلب</h1>
+    </div>
+
+    <div class="cart-summary" style="margin-bottom:1.5rem;">
+        <h3 style="color:var(--text-secondary); font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:1rem;">ملخص الطلب</h3>
+        
+        {% for pid, item in cart.items() %}
+        <div class="cart-summary-row">
+            <span>{{ item.name }} × {{ item.quantity }}</span>
+            <span>{{ "{:,.0f}".format(item.price * item.quantity) }} ج.م</span>
+        </div>
+        {% endfor %}
+        
+        <div class="cart-summary-row">
+            <span>الشحن</span>
+            <span style="color:var(--success)">مجاني</span>
+        </div>
+        <div class="cart-summary-row cart-total">
+            <span>الإجمالي</span>
+            <span>{{ "{:,.0f}".format(total) }} ج.م</span>
+        </div>
+    </div>
+
+    <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:1.5rem; margin-bottom:1.5rem;">
+        <h3 style="color:var(--text-secondary); font-size:0.85rem; text-transform:uppercase; letter-spacing:1px; margin-bottom:0.75rem;">
+            <i class="fas fa-user" style="color:var(--accent); margin-left:0.5rem;"></i> بيانات العميل
+        </h3>
+        <p style="color:var(--text-primary);">{{ session.customer_name }}</p>
+        <p style="color:var(--text-muted); font-size:0.85rem;">{{ session.customer_email }}</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('checkout') }}">
+        <div style="display:grid; gap:0.75rem;">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-check"></i> تأكيد الطلب الآن
+            </button>
+            <a href="{{ url_for('cart') }}" class="btn btn-outline">
+                ← العودة للسلة
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

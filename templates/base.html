@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}LUXE STORE{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-messages" id="flashMessages">
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">
+          {% if category == 'success' %}<i class="fas fa-check-circle"></i>
+          {% elif category == 'error' %}<i class="fas fa-exclamation-circle"></i>
+          {% else %}<i class="fas fa-info-circle"></i>{% endif %}
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block navbar %}
+<nav class="navbar">
+    <a href="{{ url_for('index') }}" class="navbar-brand">LUXE<span>STORE</span></a>
+    
+    <ul class="nav-links">
+        <li><a href="{{ url_for('index') }}">الرئيسية</a></li>
+        <li>
+            <a href="{{ url_for('cart') }}" class="nav-cart">
+                <i class="fas fa-shopping-bag"></i>
+                {% if cart_count is defined and cart_count > 0 %}
+                <span class="cart-badge">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+        </li>
+        {% if 'customer_id' in session %}
+            <li><a href="{{ url_for('profile') }}"><i class="fas fa-user"></i> {{ session.customer_name.split()[0] }}</a></li>
+            <li><a href="{{ url_for('logout') }}" class="btn-nav">خروج</a></li>
+        {% else %}
+            <li><a href="{{ url_for('login') }}">دخول</a></li>
+            <li><a href="{{ url_for('register') }}" class="btn-nav">حساب جديد</a></li>
+        {% endif %}
+    </ul>
+</nav>
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+<div class="toast" id="toast">
+    <i class="fas fa-check"></i>
+    <span id="toastMsg">تم الإضافة للسلة!</span>
+</div>
+
+<footer>
+    <div class="footer-brand">LUXE STORE</div>
+    <p>© 2025 جميع الحقوق محفوظة · تطوير: Ahmed Sameh Sharaf</p>
+</footer>
+
+<script>
+// Auto-hide flash messages
+setTimeout(() => {
+    const f = document.getElementById('flashMessages');
+    if(f) { f.style.opacity = '0'; f.style.transition = '0.5s'; setTimeout(() => f.remove(), 500); }
+}, 3500);
+
+// Toast notification
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2800);
+}
+
+// Add to cart via AJAX
+function addToCart(productId, productName) {
+    fetch('/cart/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `product_id=${productId}&quantity=1`
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.success) {
+            showToast(`✨ تمت إضافة ${productName} للسلة`);
+            // Update cart badge
+            const badge = document.querySelector('.cart-badge');
+            if(badge) {
+                badge.textContent = data.cart_count;
+            } else {
+                const cartIcon = document.querySelector('.nav-cart');
+                if(cartIcon) {
+                    const span = document.createElement('span');
+                    span.className = 'cart-badge';
+                    span.textContent = data.cart_count;
+                    cartIcon.appendChild(span);
+                }
+            }
+        }
+    });
+}
+
+// Product search filter
+const searchInput = document.getElementById('searchInput');
+if(searchInput) {
+    searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        document.querySelectorAll('.product-card').forEach(card => {
+            const name = card.querySelector('.product-name').textContent.toLowerCase();
+            card.style.display = name.includes(query) ? 'block' : 'none';
+        });
+    });
+}
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

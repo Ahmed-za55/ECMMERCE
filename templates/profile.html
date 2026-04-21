@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}ملفي الشخصي - LUXE STORE{% endblock %}
+
+{% block content %}
+<div class="profile-grid">
+    
+    <!-- Profile Card -->
+    <div>
+        <div class="profile-card">
+            <div class="profile-avatar">
+                {{ customer.fname[0] }}{{ customer.lname[0] }}
+            </div>
+            <div class="profile-name">{{ customer.fname }} {{ customer.lname }}</div>
+            <div class="profile-email">{{ customer.email }}</div>
+            <div class="profile-email" style="margin-top:0.25rem;">{{ customer.phone }}</div>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-num">{{ orders|length }}</div>
+                    <div class="stat-label">طلب</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-num">{{ customer.loginCount }}</div>
+                    <div class="stat-label">دخول</div>
+                </div>
+            </div>
+            
+            <div style="margin-top:1.5rem;">
+                <a href="{{ url_for('logout') }}" class="btn btn-outline" style="width:100%;">
+                    <i class="fas fa-sign-out-alt"></i> تسجيل الخروج
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders Section -->
+    <div class="orders-section">
+        <h2>طلباتي السابقة</h2>
+        
+        {% if orders %}
+            {% for order in orders %}
+            <div class="order-card">
+                <div>
+                    <div class="order-id">طلب #{{ order.orderID }}</div>
+                    <div class="order-date">{{ order.orderDate.strftime('%d/%m/%Y - %H:%M') if order.orderDate }}</div>
+                    <div style="color:var(--text-muted); font-size:0.8rem; margin-top:0.2rem;">
+                        {{ order.item_count }} منتج
+                    </div>
+                </div>
+                <div style="display:flex; align-items:center; gap:1rem;">
+                    <span class="order-status {{ order.status }}">
+                        {% if order.status == 'pending' %}⏳ قيد المعالجة
+                        {% elif order.status == 'completed' %}✅ مكتمل
+                        {% else %}{{ order.status }}{% endif %}
+                    </span>
+                    <div class="order-price">{{ "{:,.0f}".format(order.orderPrice) }} ج.م</div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="empty-state" style="padding:3rem 1rem;">
+            <span class="empty-icon">📦</span>
+            <h3>لا توجد طلبات بعد</h3>
+            <p>ابدأ التسوق الآن!</p>
+            <br>
+            <a href="{{ url_for('index') }}" class="btn btn-primary" style="width:auto; padding:0.75rem 2rem;">
+                <i class="fas fa-store"></i> تسوّق الآن
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

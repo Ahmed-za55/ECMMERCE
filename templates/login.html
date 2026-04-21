@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}تسجيل الدخول - LUXE STORE{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        
+        <div class="auth-logo">
+            <div class="brand">LUXE STORE</div>
+            <p>متجرك الإلكتروني المفضل</p>
+        </div>
+
+        <h2 class="auth-title">مرحباً بعودتك</h2>
+        <p class="auth-subtitle">سجّل دخولك للمتابعة</p>
+        <div class="divider"></div>
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="form-group">
+                <label>البريد الإلكتروني</label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input type="email" name="email" placeholder="example@email.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>كلمة المرور</label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" name="password" id="passwordInput" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; margin-bottom:1.5rem;">
+                <label style="display:flex; align-items:center; gap:0.5rem; cursor:pointer; color:var(--text-secondary); font-size:0.85rem; margin:0;">
+                    <input type="checkbox" onchange="togglePassword()" style="width:auto; padding:0;"> إظهار كلمة المرور
+                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i>
+                تسجيل الدخول
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            ليس لديك حساب؟ <a href="{{ url_for('register') }}">إنشاء حساب جديد</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function togglePassword() {
+    const input = document.getElementById('passwordInput');
+    input.type = input.type === 'password' ? 'text' : 'password';
+}
+</script>
+{% endblock %}

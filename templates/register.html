@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}إنشاء حساب - LUXE STORE{% endblock %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card" style="max-width:520px;">
+        
+        <div class="auth-logo">
+            <div class="brand">LUXE STORE</div>
+            <p>انضم إلينا اليوم</p>
+        </div>
+
+        <h2 class="auth-title">إنشاء حساب جديد</h2>
+        <p class="auth-subtitle">أنشئ حسابك وابدأ التسوق الآن</p>
+        <div class="divider"></div>
+
+        <form method="POST" action="{{ url_for('register') }}">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>الاسم الأول *</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-user"></i></span>
+                        <input type="text" name="fname" placeholder="أحمد" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>الاسم الأخير *</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon"><i class="fas fa-user"></i></span>
+                        <input type="text" name="lname" placeholder="سامح" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>البريد الإلكتروني *</label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-envelope"></i></span>
+                    <input type="email" name="email" placeholder="example@email.com" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>رقم الهاتف *</label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-phone"></i></span>
+                    <input type="tel" name="phone" placeholder="010xxxxxxxx" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>كلمة المرور * (6 أحرف على الأقل)</label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" name="password" id="pw1" placeholder="••••••••" required minlength="6">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>تأكيد كلمة المرور *</label>
+                <div class="input-wrapper">
+                    <span class="input-icon"><i class="fas fa-lock"></i></span>
+                    <input type="password" name="confirm_password" id="pw2" placeholder="••••••••" required>
+                </div>
+                <p id="pwMatch" style="font-size:0.8rem; margin-top:0.4rem; display:none;"></p>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+                <i class="fas fa-user-plus"></i>
+                إنشاء الحساب
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            لديك حساب بالفعل؟ <a href="{{ url_for('login') }}">تسجيل الدخول</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const pw1 = document.getElementById('pw1');
+const pw2 = document.getElementById('pw2');
+const msg = document.getElementById('pwMatch');
+const btn = document.getElementById('submitBtn');
+
+function checkMatch() {
+    if(!pw2.value) { msg.style.display='none'; return; }
+    msg.style.display = 'block';
+    if(pw1.value === pw2.value) {
+        msg.textContent = '✓ كلمتا المرور متطابقتان';
+        msg.style.color = 'var(--success)';
+        btn.disabled = false;
+    } else {
+        msg.textContent = '✗ كلمتا المرور غير متطابقتين';
+        msg.style.color = 'var(--error)';
+        btn.disabled = true;
+    }
+}
+
+pw1.addEventListener('input', checkMatch);
+pw2.addEventListener('input', checkMatch);
+</script>
+{% endblock %}

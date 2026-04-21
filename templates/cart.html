@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}سلة الشراء - LUXE STORE{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="page-header">
+        <h1><i class="fas fa-shopping-bag" style="color:var(--accent); margin-left:0.5rem;"></i> سلة الشراء</h1>
+        <a href="{{ url_for('index') }}" class="btn-nav">← متابعة التسوق</a>
+    </div>
+
+    {% if cart %}
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>المنتج</th>
+                <th>السعر</th>
+                <th>الكمية</th>
+                <th>الإجمالي</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for pid, item in cart.items() %}
+            <tr>
+                <td>
+                    <div class="cart-product-name">{{ item.name }}</div>
+                </td>
+                <td style="color:var(--accent)">{{ "{:,.0f}".format(item.price) }} ج.م</td>
+                <td>{{ item.quantity }}</td>
+                <td style="color:var(--accent); font-weight:700;">
+                    {{ "{:,.0f}".format(item.price * item.quantity) }} ج.م
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('remove_from_cart', product_id=pid) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-danger" style="width:auto; padding:0.4rem 0.8rem; font-size:0.8rem;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="cart-summary">
+        <div class="cart-summary-row">
+            <span>عدد المنتجات</span>
+            <span>{{ cart|length }} منتج</span>
+        </div>
+        <div class="cart-summary-row">
+            <span>الشحن</span>
+            <span style="color:var(--success)">مجاني</span>
+        </div>
+        <div class="cart-summary-row cart-total">
+            <span>الإجمالي الكلي</span>
+            <span>{{ "{:,.0f}".format(total) }} ج.م</span>
+        </div>
+        
+        <div style="margin-top:1.5rem; display:grid; gap:0.75rem;">
+            {% if 'customer_id' in session %}
+            <a href="{{ url_for('checkout') }}" class="btn btn-primary">
+                <i class="fas fa-check-circle"></i> تأكيد الطلب
+            </a>
+            {% else %}
+            <a href="{{ url_for('login') }}" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> سجّل الدخول للمتابعة
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    {% else %}
+    <div class="empty-state">
+        <span class="empty-icon">🛒</span>
+        <h3>سلتك فارغة!</h3>
+        <p>لم تضف أي منتجات بعد</p>
+        <br>
+        <a href="{{ url_for('index') }}" class="btn btn-primary" style="width:auto; padding:0.75rem 2rem;">
+            <i class="fas fa-store"></i> تصفح المنتجات
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
