@@ -28,7 +28,7 @@ A full-stack e-commerce web application built with **Flask** and **MySQL**, feat
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/yourusername/luxe-store.git
+git clone https://github.com/Ahmed-za55/luxe-store.git
 cd luxe-store
 ```
 
